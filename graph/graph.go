@@ -8,20 +8,24 @@ import (
 )
 
 type node struct {
-	v    *Vertex
-	next *node
+	v      *Vertex
+	next   *node
+	weight *float64
 }
 
 type Vertex struct {
-	id    int64
 	value interface{}
 	node  *node
+}
+
+func (v *Vertex) Value() interface{} {
+	return v.value
 }
 
 type Edge struct {
 	start  *Vertex
 	end    *Vertex
-	weight float64
+	weight *float64
 }
 
 type Graph struct {
@@ -29,48 +33,98 @@ type Graph struct {
 	edges    []*Edge
 }
 
-func (g *Graph) Walk() {
-	for _, v := range g.vertices {
-		fmt.Println(format(v))
+// V get count of vertices
+func (g *Graph) V() int {
+	return len(g.vertices)
+}
+
+// E get count of edges
+func (g *Graph) E() int {
+	return len(g.edges)
+}
+
+func (g *Graph) ContainsVertex(v interface{}) (bool, *Vertex) {
+	for _, tmp := range g.vertices {
+		if tmp == nil {
+			return false, nil
+		}
+		if tmp.value == v {
+			return true, tmp
+		}
 	}
+	return false, nil
 }
 
-func NewVertex(id int64, name string) *Vertex {
-	return &Vertex{id, name, nil}
+// AddEdge add edge
+func (g *Graph) AddEdge(e *Edge) {
+
 }
 
-func NewEdge(v1, v2 *Vertex, weight float64) *Edge {
+func (g *Graph) String() string {
+	var b strings.Builder
+	for _, v := range g.vertices {
+		b.WriteString(format(v) + "\n")
+	}
+	return b.String()
+}
+
+func NewVertex(value string) *Vertex {
+	return &Vertex{value, nil}
+}
+
+func NewEdge(v1, v2 *Vertex, weight *float64) *Edge {
 	return &Edge{v1, v2, weight}
 }
 
 func NewDirectGraph(scanner *bufio.Scanner, vcount, ecount int) *Graph {
 	vertices := make([]*Vertex, vcount, vcount)
 	edges := make([]*Edge, 0, ecount)
+	count := 0
 	for scanner.Scan() {
 		text := strings.TrimSpace(scanner.Text())
 		if text != "" {
 			a, b, w := readline(scanner.Text())
-			id1 := getID(a)
-			id2 := getID(b)
 			var v1, v2 *Vertex
-			if vertices[id1] == nil {
-				v1 = NewVertex(id1, a)
-				vertices[id1] = v1
+			if c, v := containsVertex(a, vertices); c {
+				v1 = v
 			} else {
-				v1 = vertices[id1]
+				v1 = NewVertex(a)
+				if count >= vcount {
+					vertices = append(vertices, v1)
+				} else {
+					vertices[count] = v1
+					count++
+				}
 			}
-			if vertices[id2] == nil {
-				v2 = NewVertex(id2, b)
-				vertices[id2] = v2
+			if c, v := containsVertex(b, vertices); c {
+				v2 = v
 			} else {
-				v2 = vertices[id2]
+				v2 = NewVertex(b)
+				if count >= vcount {
+					vertices = append(vertices, v2)
+				} else {
+					vertices[count] = v2
+					count++
+				}
 			}
-			node := &node{v2, nil}
+			node := &node{v2, nil, &w}
 			addTail(v1, node)
-			edges = append(edges, NewEdge(v1, v2, w))
+			edges = append(edges, NewEdge(v1, v2, &w))
 		}
 	}
 	return &Graph{vertices, edges}
+}
+
+func containsVertex(v interface{}, array []*Vertex) (bool, *Vertex) {
+	for _, tmp := range array {
+		if tmp == nil {
+			return false, nil
+		}
+		if tmp.value == v {
+			return true, tmp
+		}
+	}
+	return false, nil
 }
 
 func addTail(head *Vertex, node *node) {
@@ -93,10 +147,10 @@ func readline(text string) (string, string, float64) {
 
 func format(head *Vertex) string {
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("vertex: %d-%s   ", head.id, head.value))
+	b.WriteString(fmt.Sprintf("vertex: %s   ", head.value))
 	p := head.node
 	for p != nil {
-		b.WriteString(fmt.Sprintf("%d-%s ", p.v.id, p.v.value))
+		b.WriteString(fmt.Sprintf("%s[%f] ", p.v.value, *p.weight))
 		p = p.next
 	}
 	return b.String()

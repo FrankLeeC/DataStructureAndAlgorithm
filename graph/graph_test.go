@@ -15,5 +15,5 @@ func TestGraph(t *testing.T) {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	g := NewDirectGraph(scanner, 4, 6)
-	g.Walk()
+	t.Log(g.String())
 }
