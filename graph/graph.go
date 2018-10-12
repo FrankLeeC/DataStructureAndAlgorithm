@@ -57,7 +57,16 @@ func (g *Graph) ContainsVertex(v interface{}) (bool, *Vertex) {
 
 // AddEdge add edge
 func (g *Graph) AddEdge(e *Edge) {
+	start := e.start
+	node := &node{e.end, nil, e.weight}
+	if c, v := g.ContainsVertex(start.value); c {
+		start = v
+	}
+	addTail(start, node)
+}
 
+func (g *Graph) Adj(v *Vertex) []*Vertex {
+	return nil
 }
 
 func (g *Graph) String() string {
@@ -127,13 +136,26 @@ func containsVertex(v interface{}, array []*Vertex) (bool, *Vertex) {
 	return false, nil
 }
 
+func equalsVertex(v1, v2 *Vertex) bool {
+	return v1.value == v2.value
+}
+
 func addTail(head *Vertex, node *node) {
+	if head.value == node.v.value {
+		return
+	}
 	if head.node == nil {
 		head.node = node
 	} else {
 		n := head.node
 		for n.next != nil {
+			if equalsVertex(n.v, node.v) {
+				return
+			}
 			n = n.next
+		}
+		if equalsVertex(n.v, node.v) {
+			return
 		}
 		n.next = node
 	}
