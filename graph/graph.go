@@ -8,9 +8,8 @@ import (
 )
 
 type node struct {
-	v      *Vertex
-	next   *node
-	weight float64
+	v    *Vertex
+	next *node
 }
 
 type Vertex struct {
@@ -66,7 +65,7 @@ func NewDirectGraph(scanner *bufio.Scanner, vcount, ecount int) *Graph {
 			} else {
 				v2 = vertices[id2]
 			}
-			node := &node{v2, nil, w}
+			node := &node{v2, nil}
 			addTail(v1, node)
 			edges = append(edges, NewEdge(v1, v2, w))
 		}
