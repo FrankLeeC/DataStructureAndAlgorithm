@@ -2,18 +2,18 @@ package test
 
 import (
 	"bufio"
+	"os"
+	"testing"
 )
 
-type Node struct {
-	id   int
-	name string
-}
-
-type Graph struct {
-	array []*Node
-}
-
-func NewGraph(scanner *bufio.Scanner, count int) *Graph {
-	array := make([]*Node, count, count)
-	return &Graph{array}
+func TestGraph(t *testing.T) {
+	file, err := os.Open("./g.txt")
+	if err != nil {
+		t.Log(err)
+		return
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	g := NewDirectGraph(scanner, 4, 6)
+	g.Walk()
 }
