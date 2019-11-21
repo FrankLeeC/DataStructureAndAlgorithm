@@ -73,7 +73,7 @@ func quickSort(arr []int) {
 	for i <= j {
 		// 先从右往左，遇到arr[j] < arr[p]就调换两者
 		for j >= 0 {
-			if arr[j] < arr[p] {
+			if arr[j] <= arr[p] {
 				arr[p], arr[j] = arr[j], arr[p]
 				p = j
 				j--
