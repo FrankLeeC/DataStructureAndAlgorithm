@@ -58,6 +58,9 @@ func TestInsertSort(t *testing.T) {
 }
 
 // 快速排序，每轮，找一个数做为基准（第一个），从右往左找小的交换，然后从左往右找大的交换，往复直至首尾指针相遇或交错。然后递归基准数的两侧子序列。
+// 时间复杂度 平均 O(nlog(n)) 最坏 O(n^2)
+// 空间复杂度 O(log(n))
+// 特点：实际最快
 func TestQuickSort(t *testing.T) {
 	quickSort(array)
 	t.Logf("%v\n", array)
@@ -137,6 +140,7 @@ func argmin(arr []int) int {
 // 时间复杂度 平均和最坏 都是 O(nlog(n))
 // 空间复杂度 O(1)
 // 不稳定
+// 特点：不会退化
 func TestHeapSort(t *testing.T) {
 	n := len(array)
 	p := n - 1
