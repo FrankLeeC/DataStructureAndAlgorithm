@@ -62,6 +62,8 @@ func TestInsertSort(t *testing.T) {
 // 时间复杂度 平均 O(nlog(n)) 最坏 O(n^2)
 // 空间复杂度 O(log(n))
 // 特点：实际最快
+// 顺序扫描数组，内存连续，cpu缓存命中率高，所以速度快
+// 较为常用
 func TestQuickSort(t *testing.T) {
 	quickSort(array)
 	t.Logf("%v\n", array)
@@ -142,6 +144,7 @@ func argmin(arr []int) int {
 // 空间复杂度 O(1)
 // 不稳定
 // 特点：不会退化
+// 内存紧张用
 func TestHeapSort(t *testing.T) {
 	n := len(array)
 	p := n - 1
@@ -168,6 +171,10 @@ func adjust(k, l, r, n int) {
 }
 
 // 归并排序，将数组分为两列，将两列排序，然后归并为一个。递归分割，当只有一个元素时，该子序列为有序的。
+// 时间复杂度 最好/平均/最坏 都是 O(nlog(n))
+// 空间复杂度 O(n)
+// 稳定
+// 要保证稳定时用
 func TestMergeSort(t *testing.T) {
 	array = MergeSort(array)
 	t.Logf("%v\n", array)
